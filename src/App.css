@@ -1,5 +1,14 @@
 .App {
+  color: #050505;
   text-align: center;
+}
+
+h1 {
+  margin-bottom: 0.5em;
+}
+
+p {
+  margin-top: 0;
 }
 
 .App-logo {
@@ -14,18 +23,29 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: #ffffff;
+  min-height: 60vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: rgb(96, 117, 174);
 }
 
 .App-link {
   color: #61dafb;
+}
+
+.my-button {
+  background-color: #60a0e4; /* Bootstrap primary color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 15px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 @keyframes App-logo-spin {
@@ -35,4 +55,43 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Navbar styling */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 3px;
+  background-color: #333;
+  color: #fff;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-brand {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.navbar-links {
+  list-style-type: none;
+  display: flex;
+}
+
+.navbar-links li {
+  margin-left: 10px;
+}
+
+.navbar-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1em;
+  padding: 5px 10px;
+  transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+  color: #60a0e4; /* Matches the button color */
 }
