@@ -1,74 +1,59 @@
-// import { useRef } from 'react';
-// import './App.css';
-
-// function App() {
-//   const fileInputRef = useRef(null); // Create a ref for the file input
-
-//   const handleButtonClick = () => {
-//     fileInputRef.current.click(); // Trigger the hidden file input click
-//   };
-
-
-//   const handleFileChange = (event) => {
-//     const file = event.target.files[0]; // Get the selected file
-//     if (file) {
-//       console.log('Selected file:', file.name); // You can handle the file here
-//     }
-//   };
-
-//   return (
-//     <div className="App">
-//       <h1>LegalEase</h1>
-//       <header className="App-header">
-//         <h1>Upload and Share your Documents</h1>
-//         <p>Drag and drop and start uploading your documents now.</p>
-        
-//         {/* Button to trigger file input */}
-//         <button className="my-button" onClick={handleButtonClick}>
-//           START UPLOADING
-//         </button>
-        
-//         {/* Hidden file input */}
-//         <input
-//           type="file"
-//           ref={fileInputRef}
-//           onChange={handleFileChange}
-//           style={{ display: 'none' }} // Hide the file input
-//         />
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import axios from 'axios';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import About from './About';
 import Contact from './Contact';
 import UploadSuccess from './UploadSuccess';
-import Processing from './Processing'; // Import the Processing page
+import Processing from './Processing';
 import './App.css';
 
 function App() {
-  const fileInputRef = useRef(null); // Create a ref for the file input
-  const navigate = useNavigate(); // React Router's hook to navigate
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate();
+  const [uploadError, setUploadError] = useState(null);
 
   const handleButtonClick = () => {
-    fileInputRef.current.click(); // Trigger the hidden file input click
+    fileInputRef.current.click();
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      console.log(`File selected: ${file.name}`);
-      navigate('/processing', { state: { fileName: file.name } }); // Navigate to the Processing page
+    if (file && file.type === 'application/pdf') {
+      try {
+        // Create FormData to send file
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // Navigate to processing page immediately
+        navigate('/processing', { state: { fileName: file.name } });
+
+        // Send PDF to backend
+        const response = await axios.post('http://0.0.0.0:8000/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        // If successful, navigate to output page with summary
+        navigate('/upload-success', { 
+          state: { 
+            fileName: file.name, 
+            summary: response.data.summary 
+          } 
+        });
+
+      } catch (error) {
+        console.error('Upload error:', error);
+        setUploadError('Failed to upload PDF. Please try again.');
+        navigate('/');
+      }
+    } else {
+      alert('Please upload a PDF file');
     }
   };
 
   return (
     <div className="App">
-      {/* Navigation Bar */}
       <nav className="navbar">
         <div className="navbar-brand">LegalEase</div>
         <ul className="navbar-links">
@@ -78,7 +63,8 @@ function App() {
         </ul>
       </nav>
 
-      {/* Routing */}
+      {uploadError && <div className="error-message">{uploadError}</div>}
+
       <Routes>
         <Route 
           path="/" 
@@ -86,16 +72,15 @@ function App() {
             <header className="App-header">
               <h1>Upload and Share your Documents</h1>
               <p>Drag and drop and start uploading your documents now.</p>
-              {/* Button to trigger file input */}
               <button className="my-button" onClick={handleButtonClick}>
                 START UPLOADING
               </button>
-              {/* Hidden file input */}
               <input
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileChange}
-                style={{ display: 'none' }} // Hide the file input
+                accept=".pdf"
+                style={{ display: 'none' }}
               />
             </header>
           } 
