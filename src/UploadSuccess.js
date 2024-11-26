@@ -14,7 +14,7 @@ function UploadSuccess() {
       {summary ? (
         <div className="summary-container">
           <h2>Document Summary</h2>
-          <p>{extracted_text}</p>
+          <p>{summary}</p>
         </div>
       ) : (
         <p>No summary available.</p>
