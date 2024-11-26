@@ -1,16 +1,26 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import './UploadSuccess.css';
+
 function UploadSuccess() {
-  const location = useLocation(); // To access the passed file name from App component
-  const { fileName } = location.state || {}; // Get file name from navigation state
+  const location = useLocation();
+  const { fileName, summary } = location.state || {};
 
   return (
     <div className="Appp">
       <h1>Upload Success!!</h1>
-      <p>{fileName ? `File "${fileName}" has been successfully uploaded!` : 'No file uploaded.'}</p>
+      <p>{fileName ? File "${fileName}" has been successfully processed! : 'No file uploaded.'}</p>
+      
+      {summary ? (
+        <div className="summary-container">
+          <h2>Document Summary</h2>
+          <p>{summary}</p>
+        </div>
+      ) : (
+        <p>No summary available.</p>
+      )}
     </div>
   );
 }
 
-export default UploadSuccess;  
+export default UploadSuccess;
